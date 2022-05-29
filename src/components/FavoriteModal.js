@@ -3,7 +3,7 @@ import { Modal as IModal, Box } from '@mui/material'
 import styled from '@emotion/styled'
 import { Rating } from '@mui/material'
 import { Delete } from '@mui/icons-material'
-import { deleteFavBooks } from '../api/Axios'
+import { deleteFavBooks, getFavBooks } from '../api/Axios'
 
 const Modal = styled(IModal)`
     display: flex;
@@ -14,8 +14,7 @@ const Modal = styled(IModal)`
 const BoxModal = styled(Box)`
     background-color: white;
     width: auto;
-    border: 6px solid #e97394;
-    border-radius: 10px;
+    border: 4px solid #67a76e;
 `
 
 const Trash = styled(Delete)`
@@ -48,6 +47,12 @@ const TdMod3 = styled.td`
     padding-left: 20px;
 `
 
+const TableWrapper = styled.div`
+    display: flex;
+    max-height: 500px;
+    overflow: scroll;
+`
+
 const Title = styled.div`
     width: 100%;
     text-align: center;
@@ -55,14 +60,18 @@ const Title = styled.div`
     font-weight: bold;
     margin-top: 10px;
     padding-bottom: 13px;
-    border-bottom: 4px solid #e97394;
+    border-bottom: 4px solid #67a76e;
     margin-bottom: 3px;
 
 `
 
-const FavoriteModal = ({ openModal, setOpenModal, favBooks }) => {
+const FavoriteModal = ({ openModal, setOpenModal, favBooks, setFavBooks, setLoading }) => {
     const handleClickDelete = async (input) => {
+        setLoading(true)
         const data = await deleteFavBooks(input)
+        const fav = await getFavBooks();
+        setFavBooks(fav)
+        setLoading(false)
         alert(data.message);
     }
 
@@ -76,62 +85,64 @@ const FavoriteModal = ({ openModal, setOpenModal, favBooks }) => {
             >
                 <BoxModal>
                     <Title>My Favorite</Title>
-                    <TableMod>
-                        <thead>
-                            <tr>
-                                <ThMod>Image</ThMod>
-                                <ThMod>Title</ThMod>
-                                <ThMod>{'Author(s)'}</ThMod>
-                                <ThMod>Rating</ThMod>
-                                <ThMod style={{ paddingLeft: '20px' }}>Action</ThMod>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                favBooks.map((el, idx) => {
-                                    let authors = ['Unknown']
-                                    if (el.authors) {
-                                        authors = JSON.parse(el.authors)
-                                    }
-                                    return (
-                                        <tr key={idx}>
-                                            <td>
-                                                {
-                                                    el.link ?
-                                                        <img src={el.link} alt={el.title} width='60'></img>
-                                                        :
-                                                        'None'
-                                                }
-                                            </td>
-                                            <TdMod1>{el.title}</TdMod1>
-                                            <TdMod2>
-                                                {
-                                                    authors ?
-                                                        authors.length < 1 ?
-                                                            authors[0]
+                    <TableWrapper>
+                        <TableMod>
+                            <thead>
+                                <tr>
+                                    <ThMod>Image</ThMod>
+                                    <ThMod>Title</ThMod>
+                                    <ThMod>{'Author(s)'}</ThMod>
+                                    <ThMod>Rating</ThMod>
+                                    <ThMod style={{ paddingLeft: '20px' }}>Action</ThMod>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    favBooks.map((el, idx) => {
+                                        let authors = ['Unknown']
+                                        if (el.authors) {
+                                            authors = JSON.parse(el.authors)
+                                        }
+                                        return (
+                                            <tr key={idx}>
+                                                <td>
+                                                    {
+                                                        el.link ?
+                                                            <img src={el.link} alt={el.title} width='60'></img>
                                                             :
-                                                            authors.join(' | ')
-                                                        :
-                                                        'Unknown'
-                                                }
-                                            </TdMod2>
-                                            <td>
-                                                <Rating
-                                                    name="read-only"
-                                                    value={el.rating ? parseInt(el.rating) : 0}
-                                                    readOnly
-                                                    precision={0.5}
-                                                />
-                                            </td>
-                                            <TdMod3>
-                                                <Trash onClick={() => { handleClickDelete(el.id) }} />
-                                            </TdMod3>
-                                        </tr>
-                                    )
-                                })
-                            }
-                        </tbody>
-                    </TableMod>
+                                                            'None'
+                                                    }
+                                                </td>
+                                                <TdMod1>{el.title}</TdMod1>
+                                                <TdMod2>
+                                                    {
+                                                        authors ?
+                                                            authors.length < 1 ?
+                                                                authors[0]
+                                                                :
+                                                                authors.join(' | ')
+                                                            :
+                                                            'Unknown'
+                                                    }
+                                                </TdMod2>
+                                                <td>
+                                                    <Rating
+                                                        name="read-only"
+                                                        value={el.rating ? parseInt(el.rating) : 0}
+                                                        readOnly
+                                                        precision={0.5}
+                                                    />
+                                                </td>
+                                                <TdMod3>
+                                                    <Trash onClick={() => { handleClickDelete(el.id) }} />
+                                                </TdMod3>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </TableMod>
+                    </TableWrapper>
                 </BoxModal>
             </Modal>
         </>

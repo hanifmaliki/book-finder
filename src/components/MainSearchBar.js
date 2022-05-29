@@ -17,12 +17,14 @@ const ButtonMod = styled(Button)`
     margin-right: 10px;
 `
 
-const MainSearchBar = ({ setListPage, setDataBooks, searchVal, setSearchVal, setOpenModal, setFavBooks }) => {
+const MainSearchBar = ({ setListPage, setDataBooks, searchVal, setSearchVal, setOpenModal, setFavBooks, setLoading }) => {
     const handleButtonClick = async () => {
         if (searchVal) {
+            setLoading(true)
             const data = await getBooks(searchVal);
             setDataBooks(data)
             setListPage(true)
+            setLoading(false)
         }
         else {
             alert('Isi dulu bro')
@@ -30,9 +32,11 @@ const MainSearchBar = ({ setListPage, setDataBooks, searchVal, setSearchVal, set
     }
 
     const handleButtonModal = async () => {
+        setLoading(true)
         setOpenModal(true)
         const fav = await getFavBooks();
         setFavBooks(fav)
+        setLoading(false)
     }
 
     return (

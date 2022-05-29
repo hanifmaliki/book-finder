@@ -10,13 +10,6 @@ export async function getFavBooks() {
     return data?.data
 }
 
-// export async function insertFavBooks(inputs) {
-//     const { id, title, link, authors, rating } = inputs
-//     const authorsStr = JSON.stringify(authors)
-//     const data = await axios.get('https://book-finder-backend.vercel.app/api/insertFavBooks?id=' + id + '&title=' + title + '&authors=' + authorsStr + '&rating=' + rating + '&link=' + link);
-//     return data?.data
-// }
-
 export async function insertFavBooks(inputs) {
     const { id, title, link, authors, rating } = inputs
     const authorsStr = JSON.stringify(authors)
@@ -27,7 +20,6 @@ export async function insertFavBooks(inputs) {
         authors: authorsStr,
         rating: rating
     });
-    console.log(data)
     return data?.data
 }
 
