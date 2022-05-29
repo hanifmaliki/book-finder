@@ -19,7 +19,7 @@ const Loading = styled.div`
     width: 100%;
     height: 100%;
     position: absolute;
-    background-color: #80808099;
+    background-color: rgb(128 127 127 / 86%);
     display: flex;
     justify-content: center;
     align-items: center;
