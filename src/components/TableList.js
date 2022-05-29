@@ -2,9 +2,13 @@ import React from 'react'
 import { Rating } from '@mui/material';
 import { Favorite } from '@mui/icons-material';
 import styled from '@emotion/styled';
-import { insertFavBooks } from '../api/Axios';
+import { insertFavBooks, getFavBooks } from '../api/Axios';
 
-const Love = styled(Favorite)`
+const Love1 = styled(Favorite)`
+    color: red;
+`
+
+const Love2 = styled(Favorite)`
     &:hover{
         color: red;
     }
@@ -39,8 +43,10 @@ const TdMod3 = styled.td`
 
 const TableList = (props) => {
     const listBooks = props.dataBooks.items;
+    const favBooks = props.favBooks;
 
     const handleClickLove = async (inputs) => {
+        props.setLoading(true)
         const data = await insertFavBooks({
             id: inputs.id ? inputs.id : '',
             title: inputs.volumeInfo.title ? inputs.volumeInfo.title : '',
@@ -48,6 +54,9 @@ const TableList = (props) => {
             authors: inputs.volumeInfo.authors ? inputs.volumeInfo.authors : '',
             rating: inputs.volumeInfo.averageRating ? inputs.volumeInfo.averageRating : ''
         });
+        const fav = await getFavBooks();
+        props.setFavBooks(fav)
+        props.setLoading(false)
         alert(data.message)
     }
 
@@ -97,7 +106,14 @@ const TableList = (props) => {
                                         />
                                     </td>
                                     <TdMod3>
-                                        <Love onClick={() => { handleClickLove(el) }} />
+                                        {
+                                            favBooks.filter((val) => {
+                                                return val.id === el.id
+                                            }).length > 0 ?
+                                                <Love1 />
+                                                :
+                                                <Love2 onClick={() => { handleClickLove(el) }} />
+                                        }
                                     </TdMod3>
                                 </tr>
                             )

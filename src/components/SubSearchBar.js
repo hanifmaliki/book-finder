@@ -39,11 +39,13 @@ const TextFieldStyled = styled(TextField)`
     width: 40%;
 `
 
-const SubSearchBar = ({ setListPage, setDataBooks, searchVal, setSearchVal, setOpenModal, setFavBooks }) => {
+const SubSearchBar = ({ setListPage, setDataBooks, searchVal, setSearchVal, setOpenModal, setFavBooks, setLoading }) => {
     const handleButtonClick = async () => {
         if (searchVal) {
+            setLoading(true)
             const data = await getBooks(searchVal);
             setDataBooks(data)
+            setLoading(false)
         }
         else {
             alert('Isi dulu bro')
@@ -51,9 +53,11 @@ const SubSearchBar = ({ setListPage, setDataBooks, searchVal, setSearchVal, setO
     }
 
     const handleButtonModal = async () => {
+        setLoading(true)
         setOpenModal(true)
         const fav = await getFavBooks();
         setFavBooks(fav)
+        setLoading(false)
     }
 
     return (
